@@ -1,0 +1,8 @@
+ansible_user: "{{ vault_admin_user }}"
+ansible_ssh_private_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_ed25519"
+ansible_python_interpreter: "/usr/bin/python3"
+ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+
+kubernetes_minor_version: "v1.37"
+control_plane_private_ip: "10.0.1.4"
+pod_network_cidr: "10.244.0.0/16"

@@ -1,0 +1,38 @@
+#SPDX-License-Identifier: MIT-0
+
+# tasks file for roles/flannel
+
+---
+- name: Download official Flannel manifest
+  ansible.builtin.get_url:
+    url: "https://github.com/flannel-io/flannel/releases/download/v0.28.9/kube-flannel.yml"
+    dest: /tmp/kube-flannel.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Apply Flannel network plugin
+  ansible.builtin.command:
+    argv:
+      - kubectl
+      - --kubeconfig=/etc/kubernetes/admin.conf
+      - apply
+      - -f
+      - /tmp/kube-flannel.yml
+  register: flannel_apply
+  changed_when: >-
+    ' created' in flannel_apply.stdout or
+    ' configured' in flannel_apply.stdout
+
+- name: Wait for Flannel DaemonSet rollout
+  ansible.builtin.command:
+    argv:
+      - kubectl
+      - --kubeconfig=/etc/kubernetes/admin.conf
+      - rollout
+      - status
+      - daemonset/kube-flannel-ds
+      - -n
+      - kube-flannel
+      - --timeout=180s
+  changed_when: false

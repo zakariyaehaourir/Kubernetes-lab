@@ -1,0 +1,8 @@
+inventory.ini
+*.vault_pass
+.vault_pass*
+vault-password.txt
+
+roles/galaxy/
+.ansible/
+collections/

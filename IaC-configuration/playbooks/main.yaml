@@ -1,0 +1,8 @@
+---
+- name: Prepare all nodes for Kubernetes
+  hosts: all
+  become: true
+  roles:
+    - role: containerd
+    - role: osinit
+    - role: kubernetes_common

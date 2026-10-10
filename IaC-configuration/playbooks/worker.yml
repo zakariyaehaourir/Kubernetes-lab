@@ -1,0 +1,66 @@
+
+---
+- name: Generate Kubernetes worker join command
+  hosts: control_plane
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Generate temporary join command
+      ansible.builtin.command:
+        argv:
+          - kubeadm
+          - token
+          - create
+          - --ttl
+          - 30m
+          - --print-join-command
+      register: join_result
+      no_log: true
+
+    - name: Store join command for this playbook run
+      ansible.builtin.set_fact:
+        kubeadm_join_command: "{{ join_result.stdout }}"
+      no_log: true
+
+
+- name: Join Kubernetes workers
+  hosts: workers
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Join worker to Kubernetes cluster
+      ansible.builtin.command:
+        cmd: "{{ hostvars[groups['control_plane'][0]].kubeadm_join_command }}"
+        creates: /etc/kubernetes/kubelet.conf
+      register: join_result
+      no_log: true
+
+    - name: Report worker join status
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} has joined or was already configured."
+
+
+
+- name: Label Kubernetes worker nodes
+  hosts: control_plane
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Apply worker role label
+      ansible.builtin.command:
+        argv:
+          - kubectl
+          - --kubeconfig=/etc/kubernetes/admin.conf
+          - label
+          - node
+          - "{{ item }}"
+          - node-role.kubernetes.io/worker=
+          - --overwrite
+      loop:
+        - worker-1
+        - worker-2
+      register: label_result
+      changed_when: "'labeled' in label_result.stdout or 'annotated' in label_result.stdout"

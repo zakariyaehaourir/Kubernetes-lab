@@ -1,0 +1,7 @@
+
+---
+- name: Deploy Kubernetes pod network
+  hosts: control_plane
+  become: true
+  roles:
+    - flannel

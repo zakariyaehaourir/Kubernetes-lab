@@ -1,0 +1,46 @@
+#SPDX-License-Identifier: MIT-0
+
+# tasks file for roles/control_plan
+
+---
+- name: Install kubectl
+  ansible.builtin.apt:
+    name: kubectl
+    state: present
+    update_cache: true
+
+- name: Hold kubectl package version
+  ansible.builtin.dpkg_selections:
+    name: kubectl
+    selection: hold
+
+- name: Check containerd service
+  ansible.builtin.service_facts:
+
+- name: Ensure containerd is running
+  ansible.builtin.assert:
+    that:
+      - "'containerd.service' in ansible_facts.services"
+      - "ansible_facts.services['containerd.service'].state == 'running'"
+    fail_msg: "containerd must be running before initializing Kubernetes."
+    
+- name: Get installed kubeadm version
+  ansible.builtin.command:
+    argv:
+      - kubeadm
+      - version
+      - -o
+      - short
+  register: kubeadm_version
+  changed_when: false
+
+- name: Initialize Kubernetes control plane
+  ansible.builtin.command:
+    argv:
+      - kubeadm
+      - init
+      - "--kubernetes-version={{ kubeadm_version.stdout }}"
+      - "--apiserver-advertise-address={{ control_plane_private_ip }}"
+      - "--pod-network-cidr={{ pod_network_cidr }}"
+      - "--cri-socket=unix:///run/containerd/containerd.sock"
+    creates: /etc/kubernetes/admin.conf

@@ -1,0 +1,8 @@
+#SPDX-License-Identifier: MIT-0
+
+# handlers file for roles/containerd
+---
+- name: Restart containerd
+  ansible.builtin.service:
+    name: containerd
+    state: restarted
