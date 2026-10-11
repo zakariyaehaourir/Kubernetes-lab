@@ -44,3 +44,25 @@
       - "--pod-network-cidr={{ pod_network_cidr }}"
       - "--cri-socket=unix:///run/containerd/containerd.sock"
     creates: /etc/kubernetes/admin.conf
+
+- name: Test Kubectl is working
+  ansible.builtin.command: kubectl version --client
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  register: kubectl_check
+  failed_when: false
+  changed_when: false
+
+
+- name: Ensue Kubectl is working in the cluster
+  ansible.builtin.assert:
+    that:
+      - kubectl_check.rc == 0
+
+    fail_msg: "Kubectl is not wokring withing cluster"
+    success_msg: "Kubectl is working properly and can reach the cluster !"
+
+- name: Deploy service metrics
+  ansible.builtin.command: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
