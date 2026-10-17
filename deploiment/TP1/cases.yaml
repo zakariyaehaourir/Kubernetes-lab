@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: casse-1
+spec:
+  containers:
+  - name: app
+    image: nginx:1.14.2
+
+# premier case erreur dans le nom d'image  404 il n'exist pas STATUS =ErrImagePull 
+# pour corriger on utilise une image qui exist tout simplement .
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: casse-2
+spec:
+  containers:
+  - name: app
+    image: busybox:1.36
+    command: ["sh", "-c", "echo 'Démarrage...'; echo 'Erreur : fichier /config/app.conf introuvable' >&2"]
+
+# get pods renvoi Error , et desctibe dit qu'il ya du BackOff donc je pense qu'il ya une erreur dans le container lui méme pas dans le pod
+# kubectl logs --previous affiche : Démarrage... Erreur : fichier /config/app.conf introuvable qui sont des entrypoint donne dans la creation du container
+# Alors le probleme c'etait just parceque 'ilya du exit 1'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: casse-3
+spec:
+  containers:
+  - name: app
+    image: nginx:1.27
+    resources:
+      requests:
+        memory: "300Mi"
+
+# Probleme que nous avons lui donner des ressource (RAM) plus que nous avons dispo donc FailedScheduling et il est en pending parceque par default restartc'est always 
+# il va tenter de restarter tant qu'il trouve des ressource suffisant 

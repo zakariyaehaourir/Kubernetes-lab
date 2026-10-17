@@ -2,9 +2,42 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nginx
+  labels:
+    app: web
 spec:
   containers:
   - name: nginx
     image: nginx:1.14.2
+    volumeMounts:
+      - name: v-players
+        mountPath: /var/premier_league/
+      
+      - name: v-players
+        mountPath: /etc/nginx/players.txt #override existing dir without subPath
+        subPath: players.txt
+
+      - name: v-nginx-config
+        mountPath: /etc/nginx/nginx.conf
+        subPath: nginx.conf
+        readOnly: true
+
+      - name: v-nginx-config
+        mountPath: /var/www/index.html
+        subPath: index.html
+
     ports:
     - containerPort: 80
+    env:
+      - name: ENVIRONNEMENT
+        value: "formation"
+
+  volumes:
+    - name: v-players
+      configMap:
+        name: cm-players
+
+    - name: v-nginx-config
+      configMap:
+        name: nginx-config
+
+    
