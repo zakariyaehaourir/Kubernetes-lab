@@ -1,0 +1,65 @@
+>>>>>>>>>>>> LABELS <<<<<<<<<<<<<<<<<<<
+
+Get all pods with all labels :
+kubectl get pods --show-labels
+
+Get with colones :
+kubectl get pods -L app,env,tier
+
+Get all boutique pods :
+kubectl get pods -l app=boutique
+
+Get all prod pods :
+kubectl get pods -l env=prod
+
+Get all frontend in dev environement pods :
+kubectl get pods -l env=dev,tier=frontend
+
+Get all not boutique pods :
+kubectl get pods -l app!=boutique
+
+Get all pods in dev / test env :
+kubectl get pods -l 'env in (dev , test)'
+
+Add label to boutique pods : 
+kubectl label pods -l app=boutique version=1.0
+
+Get all pods without version label
+kubectl get pods -l '!version' --show-labels
+
+Update version to 1.1 for only boutique-api-prod :
+kubectl label pod boutique-api-prod version=1.1 --overwrite
+
+Delete version label for all pods :
+kubectl label pod --all version-
+
+Display only pods name of backend:
+kubectl get pods -l tier=backend -o name
+
+Delete env label for blog-dev:
+kubectl label pod blog-dev env-
+
+>>>>>>>>> Annotaions <<<<<<<<<<<<<<<<<
+kubectl annotaion pod boutique-api-prod contact="zakariyae.k8s@gmail.com" description="prod e-comm API"
+kubectl describe pod boutique-api-prod
+kubectl get pod boutique-api-prod -o jsonpath='{.metadata.annotations}'
+kubectl get pods -l contact="zakariyae.k8s@gmail.com"
+
+>>>>>>>>>> Namespaces <<<<<<<<<<<<<<<<<<<<<<
+kubectl delete pods --all
+kubectl get pods -A | grep -E "NAMESPACE|dev|prod"
+
+Get all boutique pods in all namespaces:
+kubectl get pods -l app=boutique -A
+
+kubectl exec -it busybox -- sh
+get boutique-api prod namespace adress IP : 
+kubectl get pod boutique-api -n=prod -o wide (result is 10.244.2.22)
+
+test connectivity between diff pods in diff namespaces:
+ping 10.244.2.22 (in container after exec)
+
+Get objects that's not included in any namespace:
+kubectl api-resources --namespaced=false
+
+>>>>>>>>>>> Context <<<<<<<<<<<<<<<<<<<<<<<<
