@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: players
+  labels: 
+    app: players-api
+    #version: v1
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: players-api
+      version: v2
+
+  template:
+    metadata:
+      labels:
+        app: players-api
+        version: v2
+
+
+    spec:
+      containers:
+        - name: treafik
+          image: traefik/whoami:v1.11.0
+

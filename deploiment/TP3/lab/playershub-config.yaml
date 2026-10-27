@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: playerhub-config
+
+data:
+  APP_NAME: "PlayerHub"
+  APP_ENV: "development"
+  LOG_LEVEL: "info"
+  CUSTOM: "TP3/labK8s"

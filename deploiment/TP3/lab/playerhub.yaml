@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playerhub-api
+  annotations:
+    kubernetes.io/change-cause: "init players API version"
+
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: playerhub
+
+  
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  
+
+  
+  
+  template:
+    metadata:
+      labels:
+        app: playerhub
+
+    spec:
+      containers:
+        - name : whoiam
+          image: r.deso.tech/whoami/whoami:0.6.0
+          envFrom:
+            - configMapRef:
+                name: playerhub-config
