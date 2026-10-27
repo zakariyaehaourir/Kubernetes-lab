@@ -31,3 +31,6 @@ spec:
       containers:
         - name : whoiam
           image: r.deso.tech/whoami/whoami:0.6.0
+          envFrom:
+            - configMapRef:
+                name: playerhub-config
