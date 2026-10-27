@@ -1,0 +1,6 @@
+Une petite entreprise développe PlayerHub, une API qui permet à son application de consulter des informations sur des joueurs de football.
+
+L'API est déjà développée et disponible sous forme d'image Docker. Ton rôle est de la déployer et de garantir sa disponibilité sur Kubernetes.
+
+=>>>Mission 1 — Disponibilité : si un conteneur ou un Pod disparaît, le système doit maintenir le nombre de réplicas demandé.
+=>>>Mission 2 — Mise à jour : lorsqu'une nouvelle version de l'API est publiée, elle doit être déployée progressivement, sans interrompre inutilement le service. Si la nouvelle version pose problème, il faut pouvoir revenir à la précédente.
