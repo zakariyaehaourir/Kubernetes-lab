@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-deployment
+  labels:
+    app: echo
+  annotations:
+    kubernetes.io/change-cause: "init recreat version"
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: echo
+
+
+  strategy:
+    type: Recreate
+  
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+      - name: echo-http
+        image: hashicorp/http-echo:1.0
+        ports:
+        - containerPort: 5678
+        args:
+          - "-text=init recreat version"
