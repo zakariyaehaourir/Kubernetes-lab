@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: echo-http
+  labels:
+    app: echo-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: echo-rs
+  template:
+    metadata:
+      labels:
+        app: echo-rs
+    spec:
+      containers:
+        - name: http
+          image: hashicorp/http-echo:1.0
+          args:
+            - "-text=Yoooo from k8s cluster :) V2" ##In ReplicaSet no changes were concidered in spec.template when apply (update)
+                                                    ## one of rs limits is that rs just count the nomber of rs in cluster it doesnt care about changes in template
+          ports:
+            - containerPort: 5678
+              name: http
