@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami
+  namespace: tp5
+  annotations: 
+    kubernetes.io/change-cause: "init API version"
+
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+
+  
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+        - name: whoami
+          ports:
+            - name: http
+              containerPort: 80
+          image: traefik/whoami:v1.10
