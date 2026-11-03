@@ -1,0 +1,12 @@
+#SPDX-License-Identifier: MIT-0
+---
+
+azure_ccm_namespace: kube-system
+azure_ccm_deployment_name: cloud-controller-manager
+
+azure_ccm_image: "mcr.microsoft.com/oss/v2/kubernetes/azure-cloud-controller-manager:v1.37.0"
+
+azure_ccm_cluster_name: kubernetes
+azure_ccm_cluster_cidr: "10.244.0.0/16"
+azure_ccm_configure_cloud_routes: true
+azure_ccm_allocate_node_cidrs: true

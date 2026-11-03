@@ -1,0 +1,31 @@
+---
+- name: Deploy Azure CCM RBAC resources
+  become: true
+  delegate_to: control-plane
+  run_once: true
+  block:
+
+    - name: Copy RBAC manifest to control plane
+      ansible.builtin.copy:
+        src: "{{ role_path }}/files/rbac.yaml"
+        dest: /tmp/azure-ccm-rbac.yaml
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Apply Azure CCM RBAC
+      ansible.builtin.command:
+        argv:
+          - kubectl
+          - apply
+          - -f
+          - /tmp/azure-ccm-rbac.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      register: rbac_result
+      changed_when: "'created' in rbac_result.stdout or 'configured' in rbac_result.stdout"
+
+    - name: Remove temporary RBAC manifest
+      ansible.builtin.file:
+        path: /tmp/azure-ccm-rbac.yaml
+        state: absent

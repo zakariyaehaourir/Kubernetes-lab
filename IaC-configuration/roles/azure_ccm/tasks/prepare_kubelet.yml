@@ -1,0 +1,31 @@
+
+---
+- name: Configure kubelet for external cloud provider
+  become: true
+  block:
+
+    - name: Read current kubeadm kubelet arguments
+      ansible.builtin.slurp:
+        src: /var/lib/kubelet/kubeadm-flags.env
+      register: kubeadm_flags
+
+    - name: Extract current kubelet arguments
+      ansible.builtin.set_fact:
+        current_kubelet_args: >-
+          {{ (kubeadm_flags.content | b64decode).split('"')[1] }}
+
+    - name: Ensure external cloud provider argument is present
+      ansible.builtin.copy:
+        dest: /var/lib/kubelet/kubeadm-flags.env
+        owner: root
+        group: root
+        mode: '0644'
+        content: >-
+          KUBELET_KUBEADM_ARGS="{{ current_kubelet_args
+          | regex_replace('(^|\s)--cloud-provider=[^\s]+', '')
+          | trim }} --cloud-provider=external"
+
+    - name: Restart kubelet
+      ansible.builtin.systemd:
+        name: kubelet
+        state: restarted

@@ -1,0 +1,17 @@
+
+{
+  "cloud": "AzurePublicCloud",
+  "tenantId": "fa968dca-66b0-4135-8321-d409d9413db8",
+  "subscriptionId": "632dd9d9-451e-4912-855b-3b513f13b139",
+  "resourceGroup": "rg-k8s-lab",
+  "location": "polandcentral",
+  "vmType": "vm",
+  "vnetName": "k8s-lab-vnet",
+  "vnetResourceGroup": "rg-k8s-lab",
+  "subnetName": "default-subnet",
+  "useManagedIdentityExtension": true,
+  "userAssignedIdentityID": "46fe7e62-f63e-4f89-99a9-22bbd383c6d9",
+  "useInstanceMetadata": true,
+  "loadBalancerSku": "Standard",
+  "securityGroupName": "nsg-shared"
+}

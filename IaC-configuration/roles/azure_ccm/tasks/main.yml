@@ -1,0 +1,17 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Prepare kubelet on all nodes
+  ansible.builtin.import_tasks: prepare_kubelet.yml
+
+- name: Prepare controller manager
+  ansible.builtin.import_tasks: prepare_controller_manager.yml
+  when: inventory_hostname in groups['control_plane']
+
+- name: Deploy Azure cloud configuration
+  ansible.builtin.import_tasks: deploy_cloud_config.yml
+
+- name: Deploy Azure CCM RBAC
+  ansible.builtin.import_tasks: deploy_rbac.yml
+
+- name: Deploy Azure CCM Componant
+  ansible.builtin.import_tasks: deploy_ccm.yml
