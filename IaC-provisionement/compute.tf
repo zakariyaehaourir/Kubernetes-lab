@@ -11,7 +11,7 @@ resource "azurerm_network_interface" "nic-instances" {
 
     private_ip_address = "10.0.1.${4 + count.index}" #begin from .5 
     public_ip_address_id = (
-      count.index == 0 ? azurerm_public_ip.public_ip.id :null
+      count.index == 0 ? azurerm_public_ip.public_ip.id : null
     )
   }
 }
@@ -40,5 +40,12 @@ resource "azurerm_linux_virtual_machine" "virtual_linux_instances" {
   admin_ssh_key {
     username   = var.vm_auth_config.username
     public_key = file(var.vm_auth_config.ssh_file)
+  }
+
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.azure_ccm.id
+    ]
   }
 }

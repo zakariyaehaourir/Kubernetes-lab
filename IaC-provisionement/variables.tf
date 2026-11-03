@@ -80,7 +80,7 @@ variable "vm_auth_config" {
     ssh_file = string
   })
   description = "Default vms user and ssh config"
-  sensitive =true
+  sensitive   = true
 
   default = {
     username = "k8s-admin"
