@@ -8,5 +8,5 @@ azure_ccm_image: "mcr.microsoft.com/oss/v2/kubernetes/azure-cloud-controller-man
 
 azure_ccm_cluster_name: kubernetes
 azure_ccm_cluster_cidr: "10.244.0.0/16"
-azure_ccm_configure_cloud_routes: true
+azure_ccm_configure_cloud_routes: false
 azure_ccm_allocate_node_cidrs: true
