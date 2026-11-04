@@ -18,20 +18,28 @@ resource "azurerm_role_definition" "azure_ccm" {
       "Microsoft.Network/loadBalancers/read",
       "Microsoft.Network/loadBalancers/write",
       "Microsoft.Network/loadBalancers/delete",
+      "Microsoft.Network/loadBalancers/backendAddressPools/join/action",
+
+      "Microsoft.Network/loadBalancers/backendAddressPools/read",
+      "Microsoft.Network/loadBalancers/backendAddressPools/write",
+      "Microsoft.Network/loadBalancers/backendAddressPools/delete",
 
       "Microsoft.Network/publicIPAddresses/read",
       "Microsoft.Network/publicIPAddresses/write",
       "Microsoft.Network/publicIPAddresses/delete",
+      "Microsoft.Network/publicIPAddresses/join/action",
 
       "Microsoft.Network/networkInterfaces/read",
       "Microsoft.Network/networkInterfaces/write",
 
       "Microsoft.Network/virtualNetworks/read",
       "Microsoft.Network/virtualNetworks/subnets/read",
-
-      "Microsoft.Network/virtualNetworks/subnets/join/action", #atache LoadBalancer to subnet
+      "Microsoft.Network/virtualNetworks/subnets/join/action",
 
       "Microsoft.Compute/virtualMachines/read",
+
+      "Microsoft.Network/networkSecurityGroups/read",
+      "Microsoft.Network/networkSecurityGroups/write",
     ]
     not_actions      = []
     data_actions     = []
