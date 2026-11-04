@@ -1,0 +1,5 @@
+- name: Prepare Kubernetes nodes for Azure CCM
+  hosts: all
+  become: true
+  roles:
+    - azure_ccm

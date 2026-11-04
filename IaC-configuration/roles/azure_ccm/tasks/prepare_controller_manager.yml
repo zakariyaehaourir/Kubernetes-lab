@@ -1,0 +1,8 @@
+---
+- name: Configure kube-controller-manager for external cloud provider
+  ansible.builtin.lineinfile:
+    path: /etc/kubernetes/manifests/kube-controller-manager.yaml
+    regexp: '^\s*- --cloud-provider='
+    line: '    - --cloud-provider=external'
+    insertafter: '^\s*- --cluster-name='
+    backup: true

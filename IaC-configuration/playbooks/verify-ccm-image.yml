@@ -1,0 +1,19 @@
+- name: Verify Azure CCM image availability
+  hosts: control_plane
+  become: true
+  tasks:
+    - name: Pull Azure CCM image
+      ansible.builtin.command:
+        argv:
+          - ctr
+          - --namespace
+          - k8s.io
+          - images
+          - pull
+          - mcr.microsoft.com/oss/v2/kubernetes/azure-cloud-controller-manager:v1.37.0
+      register: image_pull
+      changed_when: image_pull.rc == 0
+
+    - name: Display pull result
+      ansible.builtin.debug:
+        var: image_pull.stdout_lines

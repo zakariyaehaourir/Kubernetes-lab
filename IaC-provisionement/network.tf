@@ -15,7 +15,7 @@ resource "azurerm_subnet" "k8s-lab_Default_Subnet" {
   resource_group_name  = azurerm_resource_group.global.name
   virtual_network_name = azurerm_virtual_network.k8s_lab_vnet.name
   address_prefixes     = var.vms_subnet
-  depends_on = [azurerm_virtual_network.k8s_lab_vnet]
+  depends_on           = [azurerm_virtual_network.k8s_lab_vnet]
 }
 
 resource "azurerm_subnet_network_security_group_association" "associate-subnet-global-nsg" {
@@ -24,9 +24,9 @@ resource "azurerm_subnet_network_security_group_association" "associate-subnet-g
 }
 
 resource "azurerm_public_ip" "public_ip" {
-  name = "pip-k8s-master"
-  resource_group_name =azurerm_resource_group.global.name
-  location = var.location
-  allocation_method ="Static"
-  sku = "Standard"
+  name                = "pip-k8s-master"
+  resource_group_name = azurerm_resource_group.global.name
+  location            = var.location
+  allocation_method   = "Static"
+  sku                 = "Standard"
 }

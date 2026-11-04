@@ -1,0 +1,52 @@
+
+---
+- name: Deploy Azure cloud configuration
+  become: true
+  delegate_to: control-plane
+  run_once: true
+  block:
+
+    - name: Create temporary directory for Azure configuration
+      ansible.builtin.file:
+        path: /etc/kubernetes/azure
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Copy Azure configuration to control plane
+      ansible.builtin.copy:
+        src: "{{ role_path }}/files/azure.json"
+        dest: /etc/kubernetes/azure/azure.json
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Generate Azure Kubernetes Secret manifest
+      ansible.builtin.command:
+        argv:
+          - kubectl
+          - create
+          - secret
+          - generic
+          - azure-cloud-config
+          - --namespace=kube-system
+          - --from-file=azure.json=/etc/kubernetes/azure/azure.json
+          - --dry-run=client
+          - -o
+          - yaml
+      register: azure_secret_manifest
+      changed_when: false
+
+    - name: Apply Azure configuration Secret
+      ansible.builtin.command:
+        argv:
+          - kubectl
+          - apply
+          - -f
+          - "-"
+        stdin: "{{ azure_secret_manifest.stdout }}"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      register: azure_secret_apply
+      changed_when: "'created' in azure_secret_apply.stdout or 'configured' in azure_secret_apply.stdout"

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-controller-manager
+  namespace: kube-system
+  labels:
+    component: cloud-controller-manager
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      component: cloud-controller-manager
+
+  template:
+    metadata:
+      labels:
+        component: cloud-controller-manager
+
+    spec:
+      hostNetwork: true
+      serviceAccountName: cloud-controller-manager
+      priorityClassName: system-node-critical
+
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+
+      containers:
+        - name: cloud-controller-manager
+          image: "{{ azure_ccm_image }}"
+          imagePullPolicy: IfNotPresent
+
+          command:
+            - cloud-controller-manager
+
+          args:
+            - --cloud-provider=azure
+            - --cloud-config=/etc/kubernetes/cloud-config/azure.json
+            - --cluster-name={{ azure_ccm_cluster_name }}
+            - --controllers=*,-cloud-node
+            - --allocate-node-cidrs={{ azure_ccm_allocate_node_cidrs | lower }}
+            - --cluster-cidr={{ azure_ccm_cluster_cidr }}
+            - --configure-cloud-routes={{ azure_ccm_configure_cloud_routes | lower }}
+            - --leader-elect=true
+            - --secure-port=10267
+            - --v=4
+
+          volumeMounts:
+            - name: cloud-config
+              mountPath: /etc/kubernetes/cloud-config
+              readOnly: true
+
+            - name: etc-ssl
+              mountPath: /etc/ssl
+              readOnly: true
+
+      volumes:
+        - name: cloud-config
+          secret:
+            secretName: azure-cloud-config
+
+        - name: etc-ssl
+          hostPath:
+            path: /etc/ssl
+            type: Directory
