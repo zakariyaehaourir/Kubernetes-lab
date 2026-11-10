@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-app1
+  namespace: ingress-lab
+spec:
+  type: ClusterIP
+  selector:
+    app: app1
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-app2
+  namespace: ingress-lab
+
+spec:
+  type: ClusterIP
+  selector:
+    app: app2
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

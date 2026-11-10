@@ -1,0 +1,24 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Download Helm archive
+  ansible.builtin.get_url:
+    url: "https://get.helm.sh/helm-v3.17.3-linux-amd64.tar.gz"
+    dest: /tmp/helm.tar.gz
+    mode: '0644'
+
+
+- name: Extract Helm archive
+  ansible.builtin.unarchive:
+    src: /tmp/helm.tar.gz
+    dest: /tmp
+    remote_src: true
+    creates: /tmp/linux-amd64/helm
+
+
+- name: Install Helm binary
+  become: true
+  ansible.builtin.copy:
+    src: /tmp/linux-amd64/helm
+    dest: /usr/local/bin/helm
+    remote_src: true
+    mode: '0755'
