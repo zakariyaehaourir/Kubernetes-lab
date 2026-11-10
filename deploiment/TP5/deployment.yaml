@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-app1
+  namespace: ingress-lab
+  annotations: 
+    kubernetes.io/change-cause: "init API V1"
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1
+
+
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+        - name: app1
+          ports:
+            - name: http
+              containerPort: 80
+          image: traefik/whoami:v1.10
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-app2
+  namespace: ingress-lab
+  annotations: 
+    kubernetes.io/change-cause: "init API V2"
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app2
+  template:
+    metadata:
+      labels:
+        app: app2
+    spec:
+      containers:
+        - name: app2
+          ports:
+            - name: http
+              containerPort: 80
+          image: traefik/whoami:v1.10
+

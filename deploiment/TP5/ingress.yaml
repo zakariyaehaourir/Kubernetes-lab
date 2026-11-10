@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  namespace: ingress-lab
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: "zakariyae.dev"
+      http:
+        paths:
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: service-app1
+                port:
+                  number: 80
+    - host: "zakariyae.dev"
+      http:
+        paths:
+          - path: /api/v2
+            pathType: Prefix
+            backend:
+              service:
+                name: service-app2
+                port:
+                  number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: traefik
+spec:
+  controller: traefik.io/ingress-controller
