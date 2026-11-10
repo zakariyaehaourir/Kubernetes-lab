@@ -1,0 +1,5 @@
+- name: Setup HELM
+  hosts: localhost
+  become: true
+  roles:
+    - helm-chart
